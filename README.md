@@ -313,6 +313,165 @@ SELECT * FROM users OFFSET 5, LIMIT 10 ORDER BY id;
 ![enter image description here](https://i.ibb.co/Bj30Fzx/image.png)
 
 
+### Group by
+syntax 
+```sql
+... GROUP BY $column_name;
+```
+
+example 
+```sql
+SELECT country, COUNT(*) FROM users GROUP BY country;
+```
+![enter image description here](https://i.ibb.co/YXCpp3V/image.png)
+
+### Having
+Having works with group by, adds up an extra layer of filter.
+example
+```sql
+SELECT country, count(*) FROM users GROUP BY country HAVING COUNT(*) > 5;
+```
+This will return all the country's where the count of people are greater than 5.
+**Note** having must come before *order by*.
+
+### MAX 
+syntax 
+```sql
+SELECT MAX($column_name) FROM $table_name;
+```
+example
+```sql
+SELECT MAX(price) FROM cars;
+```
+It will return a single row, with the max priced value.
+
+### MIN 
+syntax 
+```sql
+SELECT MIN($column_name) FROM $table_name;
+```
+example
+```sql
+SELECT MIN(price) FROM cars;
+```
+It will return a single row, with the minimum priced value.
+
+### AVG (average) 
+syntax 
+```sql
+SELECT AVG($column_name) FROM $table_name;
+```
+example
+```sql
+SELECT AVG(price) FROM cars;
+```
+It will return a single row, with the average priced value.
+
+### SUM 
+syntax 
+```sql
+SELECT SUM($column_name) FROM $table_name;
+```
+example
+```sql
+SELECT SUM(price) FROM cars;
+```
+It will return a single row, with the sum of the price column.
+
+### Alias
+You can use the `as` keyword followed by a name or alias you want to use.
+syntax
+```sql
+SELECT $column_name AS $alias FROM $table_name;
+```
+example
+```sql
+SELECT name as car_name FROM cars;
+```
+It will output the name column as car_name, the values will remain the same.
+
+### Coalesce 
+Coalesce function gives us the benefit to add a default value if the first value does not exists.
+syntax
+```sql
+SELECT COALESCE($first_value, $default_value);
+```
+you can have multiple values to check, and if it does not exist, it will fall back to the next default value.
+For example,
+```sql
+SELECT COALESCE($first_value, $second_value_if_first_value_is_null, $third_value_if_second_value_is_null,...,$nth_value_if_(n-1)th_value_is_null);
+```
+### Date
+Get the current time 
+```sql
+SELECT NOW();
+```
+Get current time
+```sql
+SELECT NOW()::TIME;
+```
+Get current date
+```sql
+SELECT NOW()::DATE;
+```
+
+#### calcuating dates
+Subtracting date
+```sql
+SELECT NOW() - INTERVAL '10 YEARS'; # should return the date from 10 years ago.
+```
+Adding days
+```sql
+SELECT NOW() + INTERVAL '10 MONTHS'; # should return the date after 10 months.
+```
+#### extracting data
+Extracting can be done by the EXTRACT function.
+```sql
+SELECT EXTRACT(DAY FROM NOW());
+```
+
+### Primary keys (PK)
+Primary keys are unique identifiers accross all the data of any table. Primary key is not a must have column. This does not hold any value outside of the database. It is unique everytime its generated. Even if we delete a key, the next one will not be the same.
+#### Adding primary key
+```sql
+ALTER TABLE $table_name ADD PRIMARY KEY ($key1,$key2,...$keyN);
+```
+example
+```sql
+ALTER TABLE cars ADD PRIMARY KEY (id);
+```
+So, why did our syntax say **KEY (\$key1,\$key2,.. \$keyN);**.  Well because, we often need a unique key based on two or multiple columns. Those are called **composite keys**.
+
+#### Dropping primary key by altering table
+syntax
+```sql
+ALTER TABLE $table_name DROP CONSTRAINT $primary_key_constraint;
+```
+so if we want to drop cars table's primary key constraint,
+```sql
+ALTER TABLE cars DROP CONSTRAINT cars_pkey;
+```
+If you are using numeric column as primary key, it will auto increment by 1 by default.
+
+### Unique
+we have unique constraint to make a record unique accross the whole table. For example, we can add unique constraint to the email to make sure there are no duplicate emails.
+syntax
+```sql
+ALTER TABLE $table_name ADD CONSTRAINT $identifier UNIQUE ($column_name);
+```
+example 
+```sql
+ALTER TABLE cars ADD CONSTRAINT unique_email_address UNIQUE (email);
+```
+
+
+
+
+
+
+
+
+
 ### Data types
 PostgresSQL supports a various number of data types. You can find them [here in the PostgresSQL supported data types document.](https://www.postgresql.org/docs/9.5/datatype.html)
 
