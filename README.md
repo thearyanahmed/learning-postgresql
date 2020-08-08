@@ -142,6 +142,43 @@ SELECT name, hex from colours;
 ![Returning specific columns](https://i.ibb.co/qMTRsHQ/image.png)
 
 
+
+### Comparison operators
+|syntax| what it means  | example |
+|--|--|--|
+| = | equals to | id = 2 |
+| > | greater than | id > 2 |
+| < | less than | id < 10 |
+| >= | greater than or equals to | id >= 10 |
+| <= | less than or equals to | id <= 100 |
+| <> | not equals to | id <> 102 |
+| \|\| | contact strings | 'hello ' \|\| 'world' |
+| !!= | not in | 3 !! = i |
+| ~~ | like | 'scrappy,marc,hermit' ~~ '%scrappy%' |
+| !~~ | not like | 'bruce' !~~ '%al%' |
+| ~ | match (regex), case sensitive | 'thomas' ~ '\*.thomas\*.' |
+| ~* | match (regex), case insensitive | 'thomas' ~\* '\*.thomas\*.' |
+| !~ | Does not match (regex), case sensitive | 'thomas' !~ '\*.Thomas\*.'|
+| !~*| Does not match (regex), case insensitive | 'thomas' !~ '\*.vadim\*.' |
+
+### Arithmetic Operators
+|syntax| what it means  | example |
+|--|--|--|
+| + | addition | SELECT 2 + 5 |
+| - | subtraction | SELECT 5 -2 |
+| / | division | 10 / 2 |
+| * | multiplication | 5 * 3 |
+| % | modulo | 12 % 5 |
+| % | truncate | % 4.5 |
+| ! | factorial | 3! |
+| !! | factorial (left operation) | !! 5 |
+| : | natural Exponentiation | : 3.0 |
+| ; | natural Logarithm | (; 5.0) |
+| @ | absolute value | @ -5.0 |
+| \|/ | square root | \|/ 25.0 |
+| \|\|/ | cubic root | \|\|/ 27.0 |
+
+
 ### Sorting or Ordering data
 To order our data by a column in a ascending order,
 ```sql
@@ -185,41 +222,95 @@ SELECT * FROM users WHERE id > 30 and gender = 'Male' ORDER BY name ASC;
 And we have our results.
 ![enter image description here](https://i.ibb.co/NjM1VHj/image.png)
 
+### OR 
+syntax 
+```sql
+SELECT * FROM users WHERE $column = $value OR $column = $value; # columns can be same or different.
+```
+example.
+```sql
+SELECT * FROM users WHERE country = 'Bangladesh' OR country = 'Singapore' OR country = 'France';
+```
 
-### Comparison operators
-|syntax| what it means  | example |
-|--|--|--|
-| = | equals to | id = 2 |
-| > | greater than | id > 2 |
-| < | less than | id < 10 |
-| >= | greater than or equals to | id >= 10 |
-| <= | less than or equals to | id <= 100 |
-| <> | not equals to | id <> 102 |
-| \|\| | contact strings | 'hello ' \|\| 'world' |
-| !!= | not in | 3 !! = i |
-| ~~ | like | 'scrappy,marc,hermit' ~~ '%scrappy%' |
-| !~~ | not like | 'bruce' !~~ '%al%' |
-| ~ | match (regex), case sensitive | 'thomas' ~ '\*.thomas\*.' |
-| ~* | match (regex), case insensitive | 'thomas' ~\* '\*.thomas\*.' |
-| !~ | Does not match (regex), case sensitive | 'thomas' !~ '\*.Thomas\*.'|
-| !~*| Does not match (regex), case insensitive | 'thomas' !~ '\*.vadim\*.' |
+### IN 
+If you are quering in a single column, you can shorten the code by using in keyword.
+syntax 
+```sql
+SELECT * FROM users WHERE country IN ('Bangladesh', 'Singapore','France'); 
+```
+**Note :** You can obviously use multiple *OR*, even with *IN* clause.
 
-### Arithmetic Operators
-|syntax| what it means  | example |
+### Between
+The between keyword is used to select data from a range.
+syntax 
+```sql
+SELECT * FROM $table_name WHERE $column_name BETWEEN $starting_point AND $ending_point;
+```
+example
+```sql
+SELECT * FROM users WHERE id BETWEEN 1 AND 10;
+```
+
+### LIKE
+Like is used to match patterns.
+syntax
+```sql
+SELECT * FROM $table_name WHERE $column_name LIKE $pattern;
+```
+So, lets query out all the users who has 'United' in their country name.
+query
+```sql
+SELECT name, country FROM users WHERE country LIKE '%United%' order by name;
+```
+![enter image description here](https://i.ibb.co/GWJgmrP/image.png)
+
+#### patterns 
+
+|like| description  |
 |--|--|--|
-| + | addition | SELECT 2 + 5 |
-| - | subtraction | SELECT 5 -2 |
-| / | division | 10 / 2 |
-| * | multiplication | 5 * 3 |
-| % | modulo | 12 % 5 |
-| % | truncate | % 4.5 |
-| ! | factorial | 3! |
-| !! | factorial (left operation) | !! 5 |
-| : | natural Exponentiation | : 3.0 |
-| ; | natural Logarithm | (; 5.0) |
-| @ | absolute value | @ -5.0 |
-| \|/ | square root | \|/ 25.0 |
-| \|\|/ | cubic root | \|\|/ 27.0 |
+| WHERE CustomerName LIKE 'a%' | Finds any values that start with "a"|
+| WHERE CustomerName LIKE '%a'| Finds any values that end with "a"|
+| WHERE CustomerName LIKE '%or%' | Finds any values that have "or" in any position|
+|WHERE CustomerName LIKE '_r%' |Finds any values that have "r" in the second position|
+|WHERE CustomerName LIKE 'a_%'|Finds any values that start with "a" and are at least 2 characters in length|
+|WHERE CustomerName LIKE 'a__%'|Finds any values that start with "a" and are at least 3 characters in length|
+|WHERE ContactName LIKE 'a%o'|Finds any values that start with "a" and ends with "o"|
+
+**Note to self** underscores are used to match single characters.
+### ILIKE
+ILIKE is used to search with case insensitivity.
+
+### Limit
+syntax 
+```sql
+SELECT * FROM users LIMIT $limit;
+```
+example
+```sql
+SELECT * FROM users LIMIT 10;
+```
+
+![limiting](https://i.ibb.co/m6m8fp8/image.png)
+
+**Note to self** Limit is not a SQL standard. We can achieve the same result by using **FETCH**.
+syntax 
+```sql
+... FETCH FIRST N ROWS; # n is positive integer, can be ommited if n = 1.
+```
+
+### Offset
+We often need to select records after a specific number of results. We might need to select 10 items from 30th. Meaning 30th to 40th elements of the results.Pagination is a good example of it.
+If such scenarios, *OFFSET* comes into play. 
+syntax 
+```sql
+SELECT * FROM $table_name OFFSET $n; # n = positive integer.
+```
+example
+```sql
+SELECT * FROM users OFFSET 5, LIMIT 10 ORDER BY id;
+```
+
+![enter image description here](https://i.ibb.co/Bj30Fzx/image.png)
 
 
 ### Data types
