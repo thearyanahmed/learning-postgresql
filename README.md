@@ -61,6 +61,21 @@ Again, this is not a SQL command, so no need to add semi-colons.
 
 So now we are in our practice database, let's create some tables. We'll start with ```colours``` table.
 
+### Deleting a database
+```sql
+DROP DATABASE $database_name;
+```
+
+### Connecting to database
+The command to connect to a database is 
+```bash
+psql -h $host_ip_or_domain -p $port -U $username -W $password $dbname
+```
+So in my case, (password is ommited as my default password blank/I don't have a default password.)
+```bash
+psql -h localhost -p 5432 -U username dbname
+```
+
 ### Creating a table
 To create a table, our syntax is 
 ```sql
@@ -77,30 +92,31 @@ So our command will be
 CREATE TABLE colours (
 	id int PRIMARY KEY NOT NULL, 
 	name varchar(20) NOT NULL, 
-	hex varchar(6)
+	hex varchar(7)
 );
 ```
 To know if it worked, we can check tables,  by typeing ```\dt``` while we are in the database.
 ![List of all tables](https://i.ibb.co/L5Gwg2t/image.png)
 
+### Inserting data
 As of now, we have our table and we can store some data in it. To store data, we use a **insert** query. The insert query is structured as follows 
 ```sql
-INSERT INTO $table_name VALUES ($value_of_column_1, $value_of_column_2, ... $value_of_column_N);
+INSERT INTO $table_name ($column_1, $column_2, ... $column_N) VALUES ($value_of_column_1, $value_of_column_2, ... $value_of_column_N);
 ```
 This will insert a single row. If we want to insert multiple rows at once, we can append to the values.
 
 ```sql 
-INSERT INTO $table_name VALUES ($row_1_column_1, $row_1_column_2, ... $row_1_column_N),($row_2_column_1, $row_2_column_2, ... $row_2_column_N),($row_N_column_1, $row_N_column_2, ... $row_N_column_N);
+INSERT INTO $table_name ($column_1, $column_2, ... $column_N) VALUES ($row_1_column_1, $row_1_column_2, ... $row_1_column_N),($row_2_column_1, $row_2_column_2, ... $row_2_column_N),($row_N_column_1, $row_N_column_2, ... $row_N_column_N);
 ```
 #### Example 
 So for creating a single row 
 
 ```sql
-INSERT INTO colours VALUES (1, 'red');
+INSERT INTO colours (id, name) VALUES (1, 'red');
 ```
 For inserting multiple rows 
 ```sql
-INSERT INTO colours VALUES (2, 'green',''), (3, 'blue','3399ff');
+INSERT INTO colours (id, name, hex) VALUES (2, 'green',''), (3, 'blue','3399ff');
 ```
 
 The output should be ```INSERT 0 2```  or similar.
@@ -115,3 +131,101 @@ SELECT ALL FROM colours;
 ```
 The result should be a list data.
 ![Selecting all records from our colours table.](https://i.ibb.co/VJgLCGB/image.png)
+Now, with the ``*`` , we have selected all the columns. To select a specific column, we can specificy them in place of asterisk.
+```sql
+SELECT column_a, column_b FROM $table_name;
+``` 
+So our example will be
+```sql
+SELECT name, hex from colours;
+```
+![Returning specific columns](https://i.ibb.co/qMTRsHQ/image.png)
+
+
+### Sorting or Ordering data
+To order our data by a column in a ascending order,
+```sql
+SELECT * FROM $table_name ORDER BY $column_name $ASC_OR_DESC;
+```
+so to order our data by name, 
+```sql
+SELECT * FROM users ORDER BY name ASC;
+```
+Our result looks like this,
+![user's list](https://i.ibb.co/sw5ZScQ/image.png)
+As you see the id doesn't add up to the next row's id.  If we try it in descending order, 
+![enter image description here](https://i.ibb.co/JrPsxRh/image.png)
+
+#### Combining multiple columns in sorting
+
+```sql
+SELECT * FROM $table_name ORDER BY $column_1, $column_2, ... $column_N $ASC_OR_DESC;
+```
+for example 
+```sql
+SELECT * FROM users ORDER BY id, name ASC;
+```
+**Note:** If you do not specify the order (ascending or descending), the default will be Ascending.
+### Distinct or selecting the unique
+```sql
+SELECT DISTINCT $column_name from $table_name;
+```
+### WHERE & AND Conditionals 
+```sql
+SELECT * FROM users WHERE $column = $value;
+```
+For adding more than 1 condition, we use **AND**.
+```sql
+SELECT * FROM users WHERE $column = $value AND $another_column = $some_value AND ... $some_other_column_n = $some_value;
+```
+for example 
+```sql
+SELECT * FROM users WHERE id > 30 and gender = 'Male' ORDER BY name ASC;
+```
+And we have our results.
+![enter image description here](https://i.ibb.co/NjM1VHj/image.png)
+
+
+### Comparison operators
+|syntax| what it means  | example |
+|--|--|--|
+| = | equals to | id = 2 |
+| > | greater than | id > 2 |
+| < | less than | id < 10 |
+| >= | greater than or equals to | id >= 10 |
+| <= | less than or equals to | id <= 100 |
+| <> | not equals to | id <> 102 |
+| \|\| | contact strings | 'hello ' \|\| 'world' |
+| !!= | not in | 3 !! = i |
+| ~~ | like | 'scrappy,marc,hermit' ~~ '%scrappy%' |
+| !~~ | not like | 'bruce' !~~ '%al%' |
+| ~ | match (regex), case sensitive | 'thomas' ~ '\*.thomas\*.' |
+| ~* | match (regex), case insensitive | 'thomas' ~\* '\*.thomas\*.' |
+| !~ | Does not match (regex), case sensitive | 'thomas' !~ '\*.Thomas\*.'|
+| !~*| Does not match (regex), case insensitive | 'thomas' !~ '\*.vadim\*.' |
+
+### Arithmetic Operators
+|syntax| what it means  | example |
+|--|--|--|
+| + | addition | SELECT 2 + 5 |
+| - | subtraction | SELECT 5 -2 |
+| / | division | 10 / 2 |
+| * | multiplication | 5 * 3 |
+| % | modulo | 12 % 5 |
+| % | truncate | % 4.5 |
+| ! | factorial | 3! |
+| !! | factorial (left operation) | !! 5 |
+| : | natural Exponentiation | : 3.0 |
+| ; | natural Logarithm | (; 5.0) |
+| @ | absolute value | @ -5.0 |
+| \|/ | square root | \|/ 25.0 |
+| \|\|/ | cubic root | \|\|/ 27.0 |
+
+
+### Data types
+PostgresSQL supports a various number of data types. You can find them [here in the PostgresSQL supported data types document.](https://www.postgresql.org/docs/9.5/datatype.html)
+
+### Relations
+
+
+**Note to self** We don't need to memorize every bit but build up the queries from a simple statement and adding up more and more. 
