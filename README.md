@@ -1,5 +1,5 @@
 
-# Learning postgresSQL
+# Learning PostgreSQL
 This is a sort of like a journal for postgres SQL, jotting down the common and basic quries/functions/features of postgres SQL.
 
 So, **What is PostgresSQL?** PostgresSQL is an open-source relational database maangement system. 
