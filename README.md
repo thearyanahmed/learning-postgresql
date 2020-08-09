@@ -142,6 +142,35 @@ SELECT name, hex from colours;
 ![Returning specific columns](https://i.ibb.co/qMTRsHQ/image.png)
 
 
+### Updating a record
+syntax 
+```sql
+UPDATE $table_name SET $column_name = $value, $another_column = $another value, ... $nth_column_name = $some_value WHERE $condition;
+```
+example
+```sql
+UPDATE users SET name = 'Aryan Ahmed Anik' WHERE email='thearyanahmed@gmail.com' OR email='theprophecy@gmail.com';
+```
+**Warning** If you don't provide a where clause or a always true where clause, the operation will be performed against all the data on the table.
+
+### Deleting a record
+syntax
+```sql
+DELETE FROM $table_name WHERE $condition;
+```
+example
+```sql
+DELETE FROM users WHERE id > 10;
+```
+
+**Warning** If you don't provide a where clause or a always true where clause, the operation will be performed against all the data on the table.
+```sql 
+DELETE FROM users WHERE 1;
+# or 
+DELETE FROM users; 
+```
+All the records will be deleted.
+
 
 ### Comparison operators
 |syntax| what it means  | example |
@@ -463,10 +492,15 @@ example
 ```sql
 ALTER TABLE cars ADD CONSTRAINT unique_email_address UNIQUE (email);
 ```
-
-
-
-
+### Check constraint
+syntax
+```sql
+ALTER TABLE $table_name ADD CONSTRAINT $constrant_name CHECK ($logic);
+```
+example
+```sql
+ALTER TABLE users ADD CONSTRAINT gender_constraint CHECK (gender = 'Male');
+```
 
 
 
@@ -477,5 +511,40 @@ PostgresSQL supports a various number of data types. You can find them [here in 
 
 ### Relations
 
+#### inner joins
 
+Inner join takes the values that are common/present to both table.
+![inner join diagram.](https://images.squarespace-cdn.com/content/v1/5732253c8a65e244fd589e4c/1464122775537-YVL7LO1L7DU54X1MC2CI/ke17ZwdGBToddI8pDm48kMjn7pTzw5xRQ4HUMBCurC5Zw-zPPgdn4jUwVcJE1ZvWMv8jMPmozsPbkt2JQVr8L3VwxMIOEK7mu3DMnwqv-Nsp2ryTI0HqTOaaUohrI8PIvqemgO4J3VrkuBnQHKRCXIkZ0MkTG3f7luW22zTUABU/image-asset.png)
+
+syntax 
+```sql
+SELECT $columns FROM $first_table JOIN $second_table ON $first_table.joining_column = $second_table.reference_column;
+```
+Suppose we have a 1 to 1 relationship, where each user can have a car. A column `car_id` in users table points to the `id` column in the cars table.  So our query would be,
+```sql
+SELECT * FROM users JOIN cars ON users.car_id = cars.id;
+```
+We have 4 users, 1 user doesn't have a car assocaited with them.
+![enter image description here](https://i.ibb.co/DQXrzrS/image.png)
+### Left join
+Left join selects all the records from the left table even if they don't have a related record in the right table. 
+![enter image description here](https://images.squarespace-cdn.com/content/v1/5732253c8a65e244fd589e4c/1464122797709-C2CDMVSK7P4V0FNNX60B/ke17ZwdGBToddI8pDm48kMjn7pTzw5xRQ4HUMBCurC5Zw-zPPgdn4jUwVcJE1ZvWEV3Z0iVQKU6nVSfbxuXl2c1HrCktJw7NiLqI-m1RSK4p2ryTI0HqTOaaUohrI8PIO5TUUNB3eG_Kh3ocGD53-KZS67ndDu8zKC7HnauYqqk/image-asset.png)
+
+syntax 
+```sql
+SELECT $columns FROM $first_table LEFT JOIN $second_table ON $first_table.joining_column = $second_table.reference_column;
+```
+```sql
+SELECT * FROM users LEFT JOIN cars ON users.car_id = cars.id;
+```
+![enter image description here](https://i.ibb.co/Ykdn93Y/image.png)
+
+### Selecting specific columns
+We can prepend the table name with a dot to be more speicifc query. Instead of `SELECT name from users` we can write `SELECT users.name FROM users`, being more specific.
+**Why is this necessary?** Often we have same named columns in multiple tables, for example, a user can have name, a company table can have name, a cars table can have name. You get the idea. And also, when **JOINING** , we can be more specific instead of selecting all columns.  
+So, a inner join would be
+
+```sql
+SELECT users.name, cars.name FROM users JOIN cars ON users.car_id = cars.id; # we are only selecting user's name and the name of the car they own.
+```
 **Note to self** We don't need to memorize every bit but build up the queries from a simple statement and adding up more and more. 
