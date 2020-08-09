@@ -16,7 +16,7 @@ Table of content
 - [Arithmatic operators](#arithmetic-operators)
 - [ORDER BY](#sorting-or-ordering-data)
 - [DISTINCT](#distinct-or-selecting-the-unique)
-- [WHERE](#where-&-and-conditionals)
+- [WHERE](#where)
 - [OR](#or)
 - [IN](#in)
 - [BETWEEN](#between)
@@ -38,8 +38,8 @@ Table of content
 - [Check constraints](#check-constraint)
 - [Data types](#data-types)
 - [Relations](#relation)
-	1 [INNER JOIN or JOIN](#inner-join)
-	2 [LEFT JOIN](#left-join)
+	- 1 [INNER JOIN or JOIN](#inner-join)
+	- 2 [LEFT JOIN](#left-join)
 
 
 ### Installation
@@ -324,7 +324,7 @@ SELECT * FROM users ORDER BY id, name ASC;
 ```sql
 SELECT DISTINCT $column_name from $table_name;
 ```
-### WHERE & AND Conditionals 
+### WHERE 
 ```sql
 SELECT * FROM users WHERE $column = $value;
 ```
