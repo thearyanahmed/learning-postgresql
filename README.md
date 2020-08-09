@@ -37,7 +37,7 @@ Table of content
 - [UNIQUE](#unique)
 - [Check constraints](#check-constraint)
 - [Data types](#data-types)
-- [Relations](#relation)
+- [Relations](#relations)
 	- [INNER JOIN or JOIN](#inner-join)
 	- [LEFT JOIN](#left-join)
 
