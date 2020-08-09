@@ -60,7 +60,7 @@ psql postgres
 ```
 It will promt a new cli. The **postgres** is a default database that came with the installation.
 
-To check if everything is alright, we can check the version type
+To check if everything is alright, we can check the version by typing
 ```
 select version();
 ```
