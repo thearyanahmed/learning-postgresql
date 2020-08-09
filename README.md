@@ -38,8 +38,8 @@ Table of content
 - [Check constraints](#check-constraint)
 - [Data types](#data-types)
 - [Relations](#relation)
-	- 1 [INNER JOIN or JOIN](#inner-join)
-	- 2 [LEFT JOIN](#left-join)
+	- [INNER JOIN or JOIN](#inner-join)
+	- [LEFT JOIN](#left-join)
 
 
 ### Installation
