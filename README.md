@@ -143,7 +143,8 @@ DROP DATABASE $database_name;
 ### Connecting to database
 The command to connect to a database is 
 ```bash
-psql -h $host_ip_or_domain -p $port -U $username -W $password $dbname
+psql -h $host_ip_or_domain -p $port -U $username -W $dbname
+# using -W (capital W) will ask for a password, if you don't have any password use -w 
 ```
 So in my case, (password is ommited as my default password blank/I don't have a default password.)
 ```bash
