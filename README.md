@@ -1,8 +1,49 @@
+
 # Learning postgresSQL
-Tinkering with postgresSQL.
+This is a sort of like a journal for postgres SQL, jotting down the common and basic quries/functions/features of postgres SQL.
+
+So, **What is PostgresSQL?** PostgresSQL is an open-source relational database maangement system. 
+
+Table of content
+- 
+- [Installing postgress](#installation)
+- [Creating a user](#creating-a-user)
+- [Database](#creating-a-database)
+- [INSERT](#inserting-data)
+- [UPDATE](#updating-a-record)
+- [DELETE](#deleting-a-record)
+- [Comparison operators](#comparison-operators)
+- [Arithmatic operators](#arithmetic-operators)
+- [ORDER BY](#sorting-or-ordering-data)
+- [DISTINCT](#distinct-or-selecting-the-unique)
+- [WHERE](#where-&-and-conditionals)
+- [OR](#or)
+- [IN](#in)
+- [BETWEEN](#between)
+- [LIKE](#like)
+- [ILIKE](#ilike)
+- [LIMIT](#limit)
+- [GROUP BY](#group-by)
+- [HAVING](#having)
+- [OFFSET](#offset)
+- [MAX](#max)
+- [MIN](#minx)
+- [AVG](#avg)
+- [SUM](#sum)
+- [Alias](#alias)
+- [COALESCE](#Coalesce)
+- [DATE](#date)
+- [Primary Keys](#primary-key)
+- [UNIQUE](#unique)
+- [Check constraints](#check-constraint)
+- [Data types](#data-types)
+- [Relations](#relation)
+	1 [INNER JOIN or JOIN](#inner-join)
+	2 [LEFT JOIN](#left-join)
 
 
-PostgresSQL is an open-source relational database maangement system. 
+### Installation
+You can download the installer for your distribution [from here](https://www.postgresql.org/download/).
 
 ### Starting postgresSQL
 To start/stop/control the server I'll be using **pg_ctl**. 
@@ -12,7 +53,7 @@ pg_ctl -D /usr/local/var/postgres start
 I'm using a mac, so the directory **/usr/local/var/postgres** might vary from your machine.
 
 
-### Using the shell
+### Using the CLI
 psql is the PostgreSQL interactive terminal. To run the interactive shell, type
 ```
 psql postgres 
@@ -30,6 +71,29 @@ and the output should be similar to
 PostgreSQL 12.3 on x86_64-apple-darwin19.5.0, compiled by Apple clang version 11.0.3 (clang-1103.0.32.62), 64-bit
 (1 row)
 ```
+### Creating a user
+syntax
+```sql
+CREATE USER name [ [ WITH ] option [ ... ] ]
+```
+options are 
+```sql
+    SYSID uid 
+    | CREATEDB | NOCREATEDB
+    | CREATEUSER | NOCREATEUSER
+    | IN GROUP groupname [, ...]
+    | [ ENCRYPTED | UNENCRYPTED ] PASSWORD 'password'
+    | VALID UNTIL 'abstime'
+```
+
+Lets create a user who can login and create database and interact with them.
+```sql
+CREATE ROLE $username WITH LOGIN PASSWORD = 'password-goes-here';
+```
+example
+```sql
+CREATE ROLE plaban WITH LOGIN PASSWORD = 'secret';
+```
 
 ### Creating a database
 
@@ -43,6 +107,16 @@ create DATABASE test_db;
 the output should be
 ```
 CREATE DATABASE
+```
+
+### Creating a database with specific owner
+syntax
+```sql
+CREATE DATABASE $DB_NAME WITH OWNER $username;
+```
+example
+```sql
+CREATE USER project_db WITH OWNER plaban;
 ```
 
 ### Listing all databases
@@ -141,6 +215,20 @@ SELECT name, hex from colours;
 ```
 ![Returning specific columns](https://i.ibb.co/qMTRsHQ/image.png)
 
+
+### Selecting record/s
+syntax
+```sql
+SELECT * FROM $table_name;
+# or, if you want to be specific with column names.
+SELECT $column_name_a, $column_name_b,... $column_name_n FROM $table_name;
+```
+example
+```sql
+SELECT * FROM cars;
+```
+result
+![enter image description here](https://i.ibb.co/x7L7vfK/image.png)
 
 ### Updating a record
 syntax 
@@ -269,7 +357,7 @@ SELECT * FROM users WHERE country IN ('Bangladesh', 'Singapore','France');
 ```
 **Note :** You can obviously use multiple *OR*, even with *IN* clause.
 
-### Between
+### BETWEEN
 The between keyword is used to select data from a range.
 syntax 
 ```sql
@@ -309,7 +397,7 @@ SELECT name, country FROM users WHERE country LIKE '%United%' order by name;
 ### ILIKE
 ILIKE is used to search with case insensitivity.
 
-### Limit
+### LIMIT
 syntax 
 ```sql
 SELECT * FROM users LIMIT $limit;
@@ -327,7 +415,7 @@ syntax
 ... FETCH FIRST N ROWS; # n is positive integer, can be ommited if n = 1.
 ```
 
-### Offset
+### OFFSET
 We often need to select records after a specific number of results. We might need to select 10 items from 30th. Meaning 30th to 40th elements of the results.Pagination is a good example of it.
 If such scenarios, *OFFSET* comes into play. 
 syntax 
@@ -342,7 +430,7 @@ SELECT * FROM users OFFSET 5, LIMIT 10 ORDER BY id;
 ![enter image description here](https://i.ibb.co/Bj30Fzx/image.png)
 
 
-### Group by
+### GROUP BY
 syntax 
 ```sql
 ... GROUP BY $column_name;
@@ -354,7 +442,7 @@ SELECT country, COUNT(*) FROM users GROUP BY country;
 ```
 ![enter image description here](https://i.ibb.co/YXCpp3V/image.png)
 
-### Having
+### HAVING
 Having works with group by, adds up an extra layer of filter.
 example
 ```sql
@@ -385,7 +473,7 @@ SELECT MIN(price) FROM cars;
 ```
 It will return a single row, with the minimum priced value.
 
-### AVG (average) 
+### AVG
 syntax 
 ```sql
 SELECT AVG($column_name) FROM $table_name;
@@ -459,7 +547,7 @@ Extracting can be done by the EXTRACT function.
 SELECT EXTRACT(DAY FROM NOW());
 ```
 
-### Primary keys (PK)
+### PRIMARY KEY
 Primary keys are unique identifiers accross all the data of any table. Primary key is not a must have column. This does not hold any value outside of the database. It is unique everytime its generated. Even if we delete a key, the next one will not be the same.
 #### Adding primary key
 ```sql
@@ -482,7 +570,7 @@ ALTER TABLE cars DROP CONSTRAINT cars_pkey;
 ```
 If you are using numeric column as primary key, it will auto increment by 1 by default.
 
-### Unique
+### UNIQUE
 we have unique constraint to make a record unique accross the whole table. For example, we can add unique constraint to the email to make sure there are no duplicate emails.
 syntax
 ```sql
@@ -492,7 +580,7 @@ example
 ```sql
 ALTER TABLE cars ADD CONSTRAINT unique_email_address UNIQUE (email);
 ```
-### Check constraint
+### CHECK CONSTRAINT
 syntax
 ```sql
 ALTER TABLE $table_name ADD CONSTRAINT $constrant_name CHECK ($logic);
@@ -502,16 +590,12 @@ example
 ALTER TABLE users ADD CONSTRAINT gender_constraint CHECK (gender = 'Male');
 ```
 
-
-
-
-
 ### Data types
 PostgresSQL supports a various number of data types. You can find them [here in the PostgresSQL supported data types document.](https://www.postgresql.org/docs/9.5/datatype.html)
 
-### Relations
+## Relations
 
-#### inner joins
+### Inner join
 
 Inner join takes the values that are common/present to both table.
 ![inner join diagram.](https://images.squarespace-cdn.com/content/v1/5732253c8a65e244fd589e4c/1464122775537-YVL7LO1L7DU54X1MC2CI/ke17ZwdGBToddI8pDm48kMjn7pTzw5xRQ4HUMBCurC5Zw-zPPgdn4jUwVcJE1ZvWMv8jMPmozsPbkt2JQVr8L3VwxMIOEK7mu3DMnwqv-Nsp2ryTI0HqTOaaUohrI8PIvqemgO4J3VrkuBnQHKRCXIkZ0MkTG3f7luW22zTUABU/image-asset.png)
@@ -547,4 +631,8 @@ So, a inner join would be
 ```sql
 SELECT users.name, cars.name FROM users JOIN cars ON users.car_id = cars.id; # we are only selecting user's name and the name of the car they own.
 ```
+The doc will be updated with time.
+
 **Note to self** We don't need to memorize every bit but build up the queries from a simple statement and adding up more and more. 
+
+
