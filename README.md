@@ -596,6 +596,37 @@ PostgresSQL supports a various number of data types. You can find them [here in 
 
 ## Relations
 
+What are relations and what are joins? Well, in RDMSs, we work with structured relation data. Meaning, One data might be related to another. In real life scenario, in a blogging platform, an author can have multiple articles. So, author and aritcle are related. Authors have `1 to many` relation with articles, as a author may have multiple articles. But an article is realted to an author in `1 to 1` relation. Cause A article can belong to only one author (in our scenarion, if your application has the feature where an article can be collarboratedly writted by mulitple authors, like google docs, the relation will be 1 to many as well). 
+
+We primarily have 
+- 1 to 1 
+- 1 to many
+- many to many 
+- polymorphic
+
+#### one to one
+One to one is when the entity A can have only 1 association of entity B. Sort of like mother-child relation. A child can have one mother.
+
+#### one to many
+In this case, an entity might have multiple related entities. Like a mother can have multiple children.
+
+#### many to many 
+In this case, a any entity can have multiple assoicated entites, from both end. For example, a unversity student have many courses and each course can be enrolled by many students. 
+#### polymorphic 
+Till now, we have talked about realted entities in two tables or 3 (in case of many to many) but the number of tables are fixed, but what if, we have our related model but the number of tables are not fixed and is dynamic. 
+For example, in any social media now days,
+
+you can lets say comment on a post, a photo, album, life event etc. These `posts`, `photos`, `albums`, `life events` etc are different tables, but every comment shares the same attributes, a comment body itself, an author / user. In these scenraios, we don't make post_comments, photo_comments, album_comments multiple `$_comments` table with the same structure, we create a single comments table with the reference to the table. Our schema will have the following attributes
+
+```
+id
+comment_body
+source_id
+source_type // posts, photos,albums etc
+```
+
+So a row with `soruce_id` 1 `source_type` posts is a comment to a post where the id of the post is 1. A row with `soruce_id` 1 `source_type` albums is a comment to an `album` with the id of 1.
+
 ### Inner join
 
 Inner join takes the values that are common/present to both table.
